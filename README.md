@@ -1,72 +1,100 @@
-# Dewakoding Kasir
+Pieto POS - Aplikasi Kasir Berbasis Laravel
+Pieto POS adalah aplikasi kasir berbasis web yang dibangun menggunakan Laravel dengan pendekatan model POS (Point of Sale). Aplikasi ini dirancang untuk mempermudah proses transaksi penjualan, manajemen produk, dan pencetakan struk secara efisien dan modern.
+✨ Fitur Unggulan
+• Manajemen produk (tambah, edit, hapus)
+• Sistem keranjang belanja (shopping cart)
+• Proses checkout & pembayaran dalam satu tampilan (modal)
+• Pencetakan struk otomatis menggunakan html2pdf.js
+• Laporan transaksi harian
+• Desain responsif, cocok untuk desktop maupun tablet
+🧰 Persyaratan Instalasi
+• PHP >= 8.1
+• Composer
+• MySQL atau MariaDB
+• Node.js & npm
+• Laravel CLI (composer global require laravel/installer)
+🚀 Cara Install dan Setup Pieto POS
 
-![image](https://raw.githubusercontent.com/SeptiawanAjiP/dewakoding-kasir/master/image.jpeg)
+1. Clone Proyek dari GitHub
+   git clone https://github.com/jhezy/pieto-pos.git
+   cd pieto-pos
+2. Install Dependensi Laravel
+   composer install
+3. Copy File Environment
+   cp .env.example .env
+4. Generate App Key
+   php artisan key:generate
+5. Konfigurasi Database
+   Edit file .env dan sesuaikan:
 
-Dewakoding Kasir is a simple Point of Sale (POS) or cashier application built using Laravel, Livewire 3, and Bootstrap. This application is designed to help small business owners manage their sales transactions more efficiently.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pieto_db
+DB_USERNAME=root
+DB_PASSWORD= 6. Jalankan Migrasi dan Seeder (Opsional)
+php artisan migrate --seed 7. Install dan Build Aset Front-End
+npm install
+npm run dev
 
-## Table of Contents
+Untuk mode produksi gunakan:
+npm run build 8. Jalankan Server Laravel
+php artisan serve
 
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
+Akses: http://127.0.0.1:8000
+⚠️ Catatan Tambahan
+• Pastikan layanan database berjalan sebelum melakukan migrasi.
+• Jika ada kendala permission, jalankan: chmod -R 775 storage bootstrap/cache
+• Untuk pencetakan struk, pastikan fitur pop-up dan akses PDF tidak diblokir oleh browser.
+📄 Lisensi
+Aplikasi ini dirilis di bawah lisensi MIT.
+Pieto POS - Aplikasi Kasir Berbasis Laravel
+Pieto POS adalah aplikasi kasir berbasis web yang dibangun menggunakan Laravel dengan pendekatan model POS (Point of Sale). Aplikasi ini dirancang untuk mempermudah proses transaksi penjualan, manajemen produk, dan pencetakan struk secara efisien dan modern.
+✨ Fitur Unggulan
+• Manajemen produk (tambah, edit, hapus)
+• Sistem keranjang belanja (shopping cart)
+• Proses checkout & pembayaran dalam satu tampilan (modal)
+• Pencetakan struk otomatis menggunakan html2pdf.js
+• Laporan transaksi harian
+• Desain responsif, cocok untuk desktop maupun tablet
+🧰 Persyaratan Instalasi
+• PHP >= 8.1
+• Composer
+• MySQL atau MariaDB
+• Node.js & npm
+• Laravel CLI (composer global require laravel/installer)
+🚀 Cara Install dan Setup Pieto POS
 
-## Features
+1. Clone Proyek dari GitHub
+   git clone https://github.com/jhezy/pieto-pos.git
+   cd pieto-pos
+2. Install Dependensi Laravel
+   composer install
+3. Copy File Environment
+   cp .env.example .env
+4. Generate App Key
+   php artisan key:generate
+5. Konfigurasi Database
+   Edit file .env dan sesuaikan:
 
-- Product management: Easily add, edit, and delete products.
-- Sales transactions
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pieto_db
+DB_USERNAME=root
+DB_PASSWORD= 6. Jalankan Migrasi dan Seeder (Opsional)
+php artisan migrate --seed 7. Install dan Build Aset Front-End
+npm install
+npm run dev
 
-## Installation
+Untuk mode produksi gunakan:
+npm run build 8. Jalankan Server Laravel
+php artisan serve
 
-1. Clone the repository:
-
-    ```bash
-    https://github.com/SeptiawanAjiP/dewakoding-kasir.git
-    ```
-
-2. Navigate to the project directory:
-
-    ```bash
-    cd your-project
-    ```
-
-3. Install PHP dependencies:
-
-    ```bash
-    composer install
-    ```
-
-4. Copy the `.env.example` file to `.env` and configure your database:
-
-    ```bash
-    cp .env.example .env
-    ```
-
-5. Generate the application key:
-
-    ```bash
-    php artisan key:generate
-    ```
-6. Create symlink
-
-    ```bash
-    php artisan storage:link
-    ```
-
-7. Migrate the database:
-
-    ```bash
-    php artisan migrate --seed
-    ```
-
-8. Start the development server:
-
-    ```bash
-    php artisan serve
-    ```
-
-### Usage
-
-Visit `http://localhost:8000` in your browser to access the web-based landing page generator.
-
-### To do
-(soon)
+Akses: http://127.0.0.1:8000
+⚠️ Catatan Tambahan
+• Pastikan layanan database berjalan sebelum melakukan migrasi.
+• Jika ada kendala permission, jalankan: chmod -R 775 storage bootstrap/cache
+• Untuk pencetakan struk, pastikan fitur pop-up dan akses PDF tidak diblokir oleh browser.
+📄 Lisensi
+Aplikasi ini dirilis di bawah lisensi MIT.
