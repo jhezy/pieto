@@ -24,9 +24,17 @@
   <div class="sidebar">
     <h5>KASIR PIETO</h5>
     <!-- <a href="{{url('/dashboard')}}" class="{{ request()->is('dashboard*') || request()->is('/') ? 'active' : '' }}">Dashboard</a> -->
-    <a href="{{url('/pos')}}" class="{{ request()->is('pos*') || request()->is('/') ? 'active' : '' }}">POS</a>
+    <a href="{{url('/')}}" class="{{ request()->is('pos*') || request()->is('/') ? 'active' : '' }}">POS</a>
     <a href="{{url('/product')}}" class="{{ request()->is('product*') ? 'active' : '' }}">Produk</a>
-    <a href="{{url('/order')}}" class="{{ request()->is('order*') ? 'active' : '' }}">Rekapitulasi</a>
+    <a href="{{url('/order')}}" class="{{ request()->is('order*') ? 'active' : '' }}">Order</a>
+    <a href="{{url('/rekap')}}" class="{{ request()->is('rekap*') ? 'active' : '' }}">Rekapitulasi</a>
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class="btn btn-outline-danger">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </button>
+    </form>
+
   </div>
 
   <div class="content">

@@ -2,30 +2,39 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Livewire\Pos;
+use App\Livewire\ProductList;
+use App\Livewire\ProductCreate;
+use App\Livewire\ProductEdit;
+use App\Livewire\OrderList;
+use App\Livewire\RekapTransaksi;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::middleware(['auth'])->group(function () {
+    // POS
+    Route::get('/', Pos::class)->name('pos');
+    Route::get('/home', function () {
+        return redirect()->route('pos');
+    });
 
+    // Produk
+    Route::get('/product', ProductList::class)->name('product');
+    Route::get('/product/create', ProductCreate::class);
+    Route::get('/product/edit/{id}', ProductEdit::class)->name('product.edit');
 
-Route::middleware(['auth'])->group(
-    function () {
-        Route::get('/', App\Livewire\Pos::class);
-        Route::get('pos', App\Livewire\Pos::class)->name('pos');
-        Route::get('product', App\Livewire\ProductList::class)->name('product');
-        Route::get('product/create', App\Livewire\ProductCreate::class);
-        Route::get('product/edit/{id}', App\Livewire\ProductEdit::class)->name('posts.edit');
-        Route::get('order', App\Livewire\OrderList::class)->name('order');
-        Route::get('/order/{id}/receipt', [App\Livewire\OrderList::class, 'printReceipt'])->name('order.receipt');
-        Route::get('/home', [\App\Livewire\Pos::class])->name('home');
-    }
-);
+    // Order
+    Route::get('/order', OrderList::class)->name('order');
+    Route::get('/order/{id}/receipt', [App\Livewire\OrderList::class, 'printReceipt'])->name('order.receipt');
+
+    // Rekap Transaksi
+    Route::get('/rekap', RekapTransaksi::class)->name('rekap.transaksi');
+
+    // logout
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/login');
+    })->name('logout');
+});
 
 Auth::routes();
