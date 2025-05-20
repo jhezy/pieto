@@ -20,17 +20,17 @@
                     </thead>
                     <tbody>
                         @forelse($rekap as $item)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}</td>
-                            <td>{{ $item->jumlah_transaksi }}</td>
-                            <td>Rp {{ number_format($item->total_pendapatan, 0, ',', '.') }}</td>
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}</td>
+                                <td>{{ $item->jumlah_transaksi }}</td>
+                                <td>Rp {{ number_format($item->total_pendapatan, 0, ',', '.') }}</td>
 
-                        </tr>
+                            </tr>
 
                         @empty
-                        <tr>
-                            <td colspan="3" class="text-center">Tidak ada data.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="3" class="text-center">Tidak ada data.</td>
+                            </tr>
                         @endforelse
                     </tbody>
 

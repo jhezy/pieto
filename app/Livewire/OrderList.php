@@ -13,94 +13,83 @@ use Illuminate\Support\Carbon;
 
 class OrderList extends Component
 {
-    use WithPagination;
+    public $todayTransactions = 0;
+    public $todayRevenue = 0;
+    public $todayProfit = 0;
+    public $todaySoldItems = 0;
+    public $transactions = [];
 
-    public $search = '';
-    public $perPage = 10;
+    public function mount()
+    {
+        $this->loadTodayData();
+    }
 
+    public function loadTodayData()
+    {
+        // Define today's start and end time
+        $todayStart = Carbon::today();
+        $todayEnd = Carbon::today()->endOfDay();
+
+        // Get all orders for today
+        $todayOrders = Order::whereBetween('created_at', [$todayStart, $todayEnd])
+            ->with(['orderProducts.product'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Calculate summary data
+        $this->todayTransactions = $todayOrders->count();
+        $this->todayRevenue = 0;
+        $this->todayProfit = 0;
+        $this->todaySoldItems = 0;
+
+        // Process orders for detailed transaction list
+        $this->transactions = [];
+
+        foreach ($todayOrders as $order) {
+            $orderRevenue = 0;
+            $orderCost = 0;
+            $orderItems = 0;
+            $productList = [];
+
+            foreach ($order->orderProducts as $item) {
+                $sales = $item->unit_price * $item->quantity;
+                $cost = $item->product->cost_price * $item->quantity;
+
+                $orderRevenue += $sales;
+                $orderCost += $cost;
+                $orderItems += $item->quantity;
+
+                $productList[] = [
+                    'name' => $item->product->name,
+                    'quantity' => $item->quantity,
+                    'price' => $item->unit_price,
+                    'total' => $sales
+                ];
+            }
+
+            $this->todayRevenue += $orderRevenue;
+            $this->todayProfit += ($orderRevenue - $orderCost);
+            $this->todaySoldItems += $orderItems;
+
+            $this->transactions[] = [
+                'id' => $order->id,
+                'invoice' => $order->invoice_number,
+                'time' => Carbon::parse($order->created_at)->format('H:i'),
+                'revenue' => $orderRevenue,
+                'profit' => ($orderRevenue - $orderCost),
+                'items' => $orderItems,
+                'products' => $productList
+            ];
+        }
+    }
+
+    public function refresh()
+    {
+        $this->loadTodayData();
+    }
 
     public function render()
     {
-        $query = Order::search($this->search)
-            ->whereNotNull('done_at')
-            ->orderBy('done_at', 'DESC');
-
-        // GANTI 'grand_total' sesuai nama kolom yang benar
-        $totalPrice = $query->clone()->sum('paid_amount');
-        $totalTransactions = $query->clone()->count();
-
-        $orders = Order::whereDate('done_at', now())->get();
-
-        return view('livewire.order-list', [
-            'orders' => $orders,
-            'totalPriceFormatted' => 'Rp ' . number_format($orders->sum('total_price'), 0, ',', '.'),
-
-            'orders' => $query->paginate($this->perPage),
-            'totalPrice' => $totalPrice,
-            'totalTransactions' => $totalTransactions,
-        ]);
-    }
-    public function deleteTodayOrders()
-    {
-        $today = Carbon::today();
-
-        DB::table('orders')
-            ->whereDate('created_at', $today)
-            ->delete();
-
-        session()->flash('message', 'Order hari ini berhasil dihapus.');
-
-        $this->resetPage(); // jika pakai pagination
-    }
-    public function getTotalPriceFormattedProperty()
-    {
-        $total = $this->orders->sum('total_price');
-        return 'Rp ' . number_format($total, 0, ',', '.');
-    }
-    public function printReceipt($id)
-    {
-        $order = Order::with('orderProducts.product')->findOrFail($id);
-        return view('orders.receipt', compact('order'));
-    }
-
-
-    public function done()
-    {
-        $this->validate([
-            'paid_amount' => 'required|numeric|min:' . $this->total_price,
-        ]);
-
-        $this->order->update([
-            'paid_amount' => $this->paid_amount,
-            'done_at' => now(),
-        ]);
-
-        $this->order->refresh(); // <- ini penting agar data terbaru muncul
-
-        $this->emit('paymentSuccess');
-    }
-
-    public function closingToday()
-    {
-        $tanggal = Carbon::today()->toDateString();
-
-        $data = DB::table('orders')
-            ->whereDate('done_at', $tanggal)
-            ->selectRaw('COUNT(*) as jumlah_transaksi, SUM(paid_amount) as total_pendapatan')
-            ->first();
-
-        // Cek jika sudah pernah closing hari ini
-        if (Closing::where('tanggal', $tanggal)->exists()) {
-            session()->flash('message', 'Transaksi hari ini sudah ditutup.');
-            return;
-        }
-
-        Closing::create([
-            'tanggal' => $tanggal,
-            'jumlah_transaksi' => $data->jumlah_transaksi ?? 0,
-            'total_pendapatan' => $data->total_pendapatan ?? 0,
-        ]);
-
-        session()->flash('message', 'Transaksi hari ini berhasil ditutup (closing).');
+        return view('livewire.order-list');
     }
 }
