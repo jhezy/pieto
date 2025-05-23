@@ -150,51 +150,66 @@
     </div>
 
     <!-- Area Struk (Hidden Print Area) -->
-    <div id="printArea" style="display: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; width: 300px; margin: 0 auto; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px;">
-
-        <div class="text-center" style="border-bottom: 2px solid #333; padding-bottom: 10px;">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 80px; height: auto; margin-bottom: 8px;">
-            <h2 style="font-weight: 700; margin: 0;">KEDAI PIETO</h2>
-            <p style="font-size: 12px; margin: 2px 0;">Jl. DR. Cipto, Mastasek, Pabian,Sumenep,</p>
-            <p style="font-size: 12px; margin: 2px 0;">Telp: (081) 913 680 800</p>
+    <div class="printArea" id="printArea" style="display: none; width: 3.5in; height: 6in; padding: 10px; font-size: 12px;">
+        <div class="header">
+            <!-- <img src="../img/pieto.png" alt="Logo Kedai Pieto" style="width: 80px; margin-bottom: 8px;" /> -->
+            <h1>KEDAI PIETO</h1>
+            <p>Jl. Pabian No. 123, Sumenep</p>
+            <p>Telp: 0812-3456-7890</p>
         </div>
 
-        <h3 style="text-align: center; margin: 20px 0 10px 0; font-weight: 600;">Struk Pembayaran</h3>
+        <hr class="separator" />
 
-        @if ($order)
-        <p style="font-size: 14px; margin: 8px 0;"><strong>Invoice:</strong> {{ $order->invoice_number }}</p>
+        <p>No. Struk: {{ $order->invoice_number }}<br />
+            Transaksi: {{ $order->done_at_for_human }}</p>
 
-        <div style="border-top: 1px dashed #999; border-bottom: 1px dashed #999; padding: 10px 0;">
+        <hr class="separator" />
+
+        <table>
             @foreach ($order->orderProducts as $item)
-            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px;">
-                <div>
-                    {{ $item->product->name }}<br>
-                    <small style="color: #666;">{{ $item->quantity }} x Rp {{ number_format($item->product->selling_price, 0, ',', '.') }}</small>
-                </div>
-                <div style="font-weight: 600;">
-                    Rp {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}
-                </div>
-            </div>
+            <tr>
+                <td class="product-name" colspan="2">{{ $item->product->name }}</td>
+            </tr>
+            <tr>
+                <td class="qty-left quantity-price">{{ $item->quantity }} x
+                    {{ number_format($item->unit_price, 0, ',', '.') }}
+                </td>
+                <td class="price-right">Rp
+                    {{ number_format($item->unit_price * $item->quantity, 0, ',', '.') }}
+                </td>
+            </tr>
             @endforeach
-        </div>
+        </table>
 
-        <div style="margin-top: 12px; font-size: 14px;">
-            <div style="display: flex; justify-content: space-between; font-weight: 700; border-top: 2px solid #333; padding-top: 8px;">
-                <span>Total</span>
-                <span>Rp {{ number_format($total_price, 0, ',', '.') }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
-                <span>Dibayar</span>
-                <span>Rp {{ number_format($paid_amount, 0, ',', '.') }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
-                <span>Kembalian</span>
-                <span>Rp {{ number_format($change, 0, ',', '.') }}</span>
-            </div>
-        </div>
+        <hr class="double-separator" />
 
-        <p style="text-align: center; margin-top: 30px; font-weight: 600; font-size: 14px;">Terima kasih atas kunjungan Anda!</p>
-        @endif
+        <table class="totals" style="width: 100%; font-weight: bold; font-size: 13px;">
+            <tr>
+                <td class="total-highlight">Total</td>
+                <td style="text-align: right;" class="total-highlight">Rp
+                    {{ number_format($order->total_price, 0, ',', '.') }}
+                </td>
+            </tr>
+            <tr>
+                <td>Dibayar</td>
+                <td style="text-align: right;">Rp {{ number_format($order->paid_amount, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Kembalian</td>
+                <td style="text-align: right;">Rp
+                    {{ number_format($order->paid_amount - $order->total_price, 0, ',', '.') }}
+                </td>
+            </tr>
+        </table>
+
+        <hr class="separator" />
+
+        <div class="footer">
+            --- Terima kasih ---<br />
+            Selamat Menikmati <br />
+            --- = --- <br />
+            <b>WIFI: Kedai Pieto<br />Password: hurufbesar</b>
+        </div>
     </div>
 
 
@@ -205,28 +220,32 @@
     <script>
         function printReceipt() {
             const element = document.getElementById("printArea");
-            element.style.display = "block"; // tampilkan area sebelum print
+            if (!element) return alert("Struk belum tersedia!");
 
-            const opt = {
-                margin: 0.3,
-                filename: 'struk-pembayaran.pdf',
-                image: {
-                    type: 'jpeg',
-                    quality: 0.98
-                },
-                html2canvas: {
-                    scale: 2
-                },
-                jsPDF: {
-                    unit: 'in',
-                    format: 'A5',
-                    orientation: 'portrait'
-                }
-            };
+            element.style.display = "block";
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = "none"; // sembunyikan kembali setelah print
-            });
+            setTimeout(() => {
+                const opt = {
+                    margin: 0.3,
+                    filename: 'struk-pembayaran.pdf',
+                    image: {
+                        type: 'jpeg',
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2
+                    },
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'A5',
+                        orientation: 'portrait'
+                    }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.style.display = "none";
+                });
+            }, 300);
         }
     </script>
 

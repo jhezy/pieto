@@ -46,19 +46,19 @@
                 </button>
             </div>
 
-            @if (Route::has('password.request'))
+            <!-- @if (Route::has('password.request'))
             <div style="text-align: right; margin-top: 10px;">
                 <a href="{{ route('password.request') }}" style="font-size: 13px; color: #2563eb;">
                     Lupa Password?
                 </a>
             </div>
-            @endif
+            @endif -->
         </form>
 
-        <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+        <!-- <div style="text-align: center; margin-top: 20px; font-size: 14px;">
             Belum punya akun?
             <a href="{{ route('register') }}" style="color: #2563eb; font-weight: 500;">Daftar</a>
-        </div>
+        </div> -->
     </div>
 </div>
 @endsection

@@ -24,6 +24,9 @@ Route::middleware(['auth'])->group(function () {
     // Order
     Route::get('/order', OrderList::class)->name('order');
     Route::get('/order/{id}/receipt', [App\Livewire\OrderList::class, 'printReceipt'])->name('order.receipt');
+    Route::get('/receipt/{id}/print', [ReceiptController::class, 'print'])->name('receipt.print');
+
+
 
     // Rekap Transaksi
     Route::get('/rekap', function () {

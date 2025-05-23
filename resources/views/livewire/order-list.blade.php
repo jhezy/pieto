@@ -102,41 +102,50 @@
                                     <th>Produk</th>
                                     <th class="text-end">Total</th>
                                     <th class="text-end">Profit</th>
+                                    <th>Print</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($transactions as $transaction)
-                                    <tr>
-                                        <td>
-                                            <span class="fw-medium">{{ $transaction['invoice'] }}</span>
-                                        </td>
-                                        <td>{{ $transaction['time'] }}</td>
-                                        <td>
-                                            <div class="transaction-products">
-                                                @foreach ($transaction['products'] as $index => $product)
-                                                    <span class="product-item">
-                                                        {{ $product['name'] }} ({{ $product['quantity'] }})
-                                                    </span>
-                                                    @if ($index < count($transaction['products']) - 1)
-                                                        <span class="separator">&bull;</span>
-                                                    @endif
+                                <tr>
+                                    <td>
+                                        <span class="fw-medium">{{ $transaction['invoice'] }}</span>
+                                    </td>
+                                    <td>{{ $transaction['time'] }}</td>
+                                    <td>
+                                        <div class="transaction-products">
+                                            @foreach ($transaction['products'] as $index => $product)
+                                            <span class="product-item">
+                                                {{ $product['name'] }} ({{ $product['quantity'] }})
+                                            </span>
+                                            @if ($index < count($transaction['products']) - 1)
+                                                <span class="separator">&bull;</span>
+                                                @endif
                                                 @endforeach
-                                            </div>
-                                        </td>
-                                        <td class="text-end">Rp
-                                            {{ number_format($transaction['revenue'], 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp
-                                            {{ number_format($transaction['profit'], 0, ',', '.') }}</td>
-                                    </tr>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">Rp
+                                        {{ number_format($transaction['revenue'], 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-end">Rp
+                                        {{ number_format($transaction['profit'], 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('order.receipt', $transaction['invoice']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-printer"></i> Print
+                                        </a>
+                                    </td>
+
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4">
-                                            <img src="{{ asset('images/empty-transaction.svg') }}"
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        <!-- <img src="{{ asset('images/empty-transaction.svg') }}"
                                                 alt="No Transactions" style="width: 80px; opacity: 0.5;"
-                                                onerror="this.src='https://via.placeholder.com/80'; this.onerror=null;">
-                                            <p class="mt-3 text-muted">Belum ada transaksi hari ini</p>
-                                        </td>
-                                    </tr>
+                                                onerror="this.src='https://via.placeholder.com/80'; this.onerror=null;"> -->
+                                        <p class="mt-3 text-muted">Belum ada transaksi hari ini</p>
+                                    </td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>

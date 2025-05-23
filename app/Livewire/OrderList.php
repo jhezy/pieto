@@ -83,6 +83,25 @@ class OrderList extends Component
         }
     }
 
+    public function printReceipt($orderId)
+    {
+        return redirect()->route('receipt.print', ['id' => $orderId]);
+    }
+    public function print($id)
+    {
+        $transaction = Transaction::with('items.product')->findOrFail($id);
+        return view('receipt', compact('transaction'));
+    }
+
+
+
+    public function showReceipt($invoice)
+    {
+        $transaction = Transaction::with('items.product')->where('invoice', $invoice)->firstOrFail();
+        return view('receipt', compact('transaction'));
+    }
+
+
     public function refresh()
     {
         $this->loadTodayData();
