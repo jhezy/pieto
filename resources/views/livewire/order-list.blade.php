@@ -131,7 +131,7 @@
                                         {{ number_format($transaction['profit'], 0, ',', '.') }}
                                     </td>
                                     <td>
-                                        <a href="{{ route('order.receipt', $transaction['invoice']) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('receipt.print', $transaction['id']) }}" target="_blank" class="btn btn-primary">
                                             <i class="bi bi-printer"></i> Print
                                         </a>
                                     </td>
@@ -154,6 +154,13 @@
             </div>
         </div>
     </div>
+    @if (session()->has('print_receipt_id'))
+    <script>
+        setTimeout(function() {
+            window.open("{{ route('receipt.print', session('print_receipt_id')) }}", "_blank");
+        }, 2000); // delay 2 detik
+    </script>
+    @endif
 
     <style>
         .icon-bg {

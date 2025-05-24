@@ -4,14 +4,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Transaction; // sesuaikan jika modelnya bernama lain
+use App\Models\Order;
 
 class ReceiptController extends Controller
 {
-    public function print($id)
+    public function show($id)
     {
-        $transaction = Transaction::with('items.product')->findOrFail($id); // sesuaikan relasi jika berbeda
-        return view('orders.receipt', compact('transaction'));
+        $order = Order::with('orderProducts.product')->findOrFail($id);
+
+        return view('orders.receipt', compact('order'));
     }
 }

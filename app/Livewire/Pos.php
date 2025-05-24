@@ -99,6 +99,7 @@ class Pos extends Component
         }
     }
 
+
     public function done()
     {
         $this->validate([
@@ -118,7 +119,7 @@ class Pos extends Component
         session()->flash('message', 'Pembayaran berhasil disimpan.');
 
 
-        $this->dispatch('paymentStored');
+        session()->flash('print_receipt_id', $this->order->id);
         return redirect()->route('order');
     }
 

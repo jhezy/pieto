@@ -14,29 +14,29 @@
             <!-- Daftar Produk -->
             <div class="row product-grid">
                 @forelse ($products as $item)
-                    <div wire:click="updateCart('{{ $item->id }}')"
-                        class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="product-card card h-100 border-0 shadow-sm">
-                            <div class="position-relative product-img-container">
-                                <img src="{{ Str::startsWith($item->image, ['http://', 'https://']) ? $item->image : asset('/storage/product/' . $item->image) }}"
-                                    class="card-img-top" alt="{{ $item->name }}">
-                                <div class="product-overlay">
-                                    <span class="add-to-cart"><i class="bi bi-plus-circle"></i></span>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="product-title" title="{{ $item->name }}">{{ $item->name }}</h6>
-                                <div class="product-price">{{ $item->selling_price_formatted }}</div>
+                <div wire:click="updateCart('{{ $item->id }}')"
+                    class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <div class="product-card card h-100 border-0 shadow-sm">
+                        <div class="position-relative product-img-container">
+                            <img src="{{ Str::startsWith($item->image, ['http://', 'https://']) ? $item->image : asset('/storage/product/' . $item->image) }}"
+                                class="card-img-top" alt="{{ $item->name }}">
+                            <div class="product-overlay">
+                                <span class="add-to-cart"><i class="bi bi-plus-circle"></i></span>
                             </div>
                         </div>
+                        <div class="card-body">
+                            <h6 class="product-title" title="{{ $item->name }}">{{ $item->name }}</h6>
+                            <div class="product-price">{{ $item->selling_price_formatted }}</div>
+                        </div>
                     </div>
+                </div>
                 @empty
-                    <div class="col-12">
-                        <div class="empty-products">
-                            <i class="bi bi-basket"></i>
-                            <p>Produk masih kosong</p>
-                        </div>
+                <div class="col-12">
+                    <div class="empty-products">
+                        <i class="bi bi-basket"></i>
+                        <p>Produk masih kosong</p>
                     </div>
+                </div>
                 @endforelse
             </div>
 
@@ -52,76 +52,76 @@
                 <div class="card-header">
                     <h5 class="mb-0 text-center">
                         @if ($order)
-                            <i class="bi bi-receipt me-2"></i>{{ $order->invoice_number }}
+                        <i class="bi bi-receipt me-2"></i>{{ $order->invoice_number }}
                         @else
-                            <i class="bi bi-cart me-2"></i>Keranjang Belanja
+                        <i class="bi bi-cart me-2"></i>Keranjang Belanja
                         @endif
                     </h5>
                 </div>
 
                 <div class="card-body cart-body">
                     @if (session()->has('message'))
-                        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                            {{ session('message') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                        </div>
+                    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
                     @endif
 
                     @if ($order)
-                        <div class="cart-items">
-                            @foreach ($order->orderProducts as $item)
-                                <div class="cart-item">
-                                    <div class="cart-item-img">
-                                        <img src="{{ Str::startsWith($item->product->image, ['http://', 'https://']) ? $item->product->image : asset('/storage/product/' . $item->product->image) }}"
-                                            alt="{{ $item->product->name }}">
-                                    </div>
-                                    <div class="cart-item-details">
-                                        <h6>{{ $item->product->name }}</h6>
-                                        <span class="price">{{ $item->product->selling_price_formatted }}</span>
-                                    </div>
-                                    <div class="cart-item-quantity">
-                                        <button class="btn-quantity decrease"
-                                            wire:click="updateCart('{{ $item->product->id }}', false)">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <span class="quantity">{{ $item->quantity }}</span>
-                                        <button class="btn-quantity increase"
-                                            wire:click="updateCart('{{ $item->product->id }}')">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="cart-items">
+                        @foreach ($order->orderProducts as $item)
+                        <div class="cart-item">
+                            <div class="cart-item-img">
+                                <img src="{{ Str::startsWith($item->product->image, ['http://', 'https://']) ? $item->product->image : asset('/storage/product/' . $item->product->image) }}"
+                                    alt="{{ $item->product->name }}">
+                            </div>
+                            <div class="cart-item-details">
+                                <h6>{{ $item->product->name }}</h6>
+                                <span class="price">{{ $item->product->selling_price_formatted }}</span>
+                            </div>
+                            <div class="cart-item-quantity">
+                                <button class="btn-quantity decrease"
+                                    wire:click="updateCart('{{ $item->product->id }}', false)">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <span class="quantity">{{ $item->quantity }}</span>
+                                <button class="btn-quantity increase"
+                                    wire:click="updateCart('{{ $item->product->id }}')">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
                         </div>
+                        @endforeach
+                    </div>
                     @else
-                        <div class="empty-cart">
-                            @if (count($products) > 0)
-                                <div class="text-center">
-                                    <i class="bi bi-cart-plus"></i>
-                                    <p>Keranjang masih kosong</p>
-                                    <button wire:click="createOrder()" class="btn btn-primary w-100">
-                                        <i class="bi bi-plus-circle me-2"></i>Mulai Transaksi
-                                    </button>
-                                </div>
-                            @endif
+                    <div class="empty-cart">
+                        @if (count($products) > 0)
+                        <div class="text-center">
+                            <i class="bi bi-cart-plus"></i>
+                            <p>Keranjang masih kosong</p>
+                            <button wire:click="createOrder()" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle me-2"></i>Mulai Transaksi
+                            </button>
                         </div>
+                        @endif
+                    </div>
                     @endif
                 </div>
 
                 @if ($total_price != 0)
-                    <div class="cart-total">
-                        <span>Total</span>
-                        <span class="total-price">Rp {{ number_format($total_price, 0, ',', '.') }}</span>
-                    </div>
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span class="total-price">Rp {{ number_format($total_price, 0, ',', '.') }}</span>
+                </div>
                 @endif
 
                 @if ($order)
-                    <div class="card-footer">
-                        <button class="btn btn-pay w-100" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <i class="bi bi-cash me-2"></i>Pembayaran
-                        </button>
-                    </div>
+                <div class="card-footer">
+                    <button class="btn btn-pay w-100" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="bi bi-cash me-2"></i>Pembayaran
+                    </button>
+                </div>
                 @endif
             </div>
         </div>
@@ -147,36 +147,36 @@
                                     wire:model.debounce.300ms="paid_amount" placeholder="Masukkan nominal">
                             </div>
                             @error('paid_amount')
-                                <div class="text-danger mt-1">{{ $message }}</div>
+                            <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <form wire:submit.prevent="done" id="payment-form">
                             <!-- Tampilkan daftar item -->
                             @if ($order)
-                                <div class="order-details">
-                                    <h6 class="section-title">
-                                        <i class="bi bi-list-check me-2"></i>Rincian Pesanan
-                                    </h6>
-                                    <div class="order-items">
-                                        @foreach ($order->orderProducts as $item)
-                                            <div class="order-item">
-                                                <div class="item-info">
-                                                    <span class="item-name">{{ $item->product->name }}</span>
-                                                    <span class="item-quantity">{{ $item->quantity }} x
-                                                        {{ $item->product->selling_price_formatted }}</span>
-                                                </div>
-                                                <span class="item-total">Rp
-                                                    {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}</span>
-                                            </div>
-                                        @endforeach
+                            <div class="order-details">
+                                <h6 class="section-title">
+                                    <i class="bi bi-list-check me-2"></i>Rincian Pesanan
+                                </h6>
+                                <div class="order-items">
+                                    @foreach ($order->orderProducts as $item)
+                                    <div class="order-item">
+                                        <div class="item-info">
+                                            <span class="item-name">{{ $item->product->name }}</span>
+                                            <span class="item-quantity">{{ $item->quantity }} x
+                                                {{ $item->product->selling_price_formatted }}</span>
+                                        </div>
+                                        <span class="item-total">Rp
+                                            {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}</span>
                                     </div>
-                                    <div class="order-total">
-                                        <span>Total</span>
-                                        <span class="total-amount">Rp
-                                            {{ number_format($total_price, 0, ',', '.') }}</span>
-                                    </div>
+                                    @endforeach
                                 </div>
+                                <div class="order-total">
+                                    <span>Total</span>
+                                    <span class="total-amount">Rp
+                                        {{ number_format($total_price, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
                             @endif
 
                             <div class="mt-4">
@@ -218,85 +218,85 @@
         <h3 style="text-align: center; margin: 20px 0 10px 0; font-weight: 600;">Struk Pembayaran</h3>
 
         @if ($order)
-            <p style="font-size: 14px; margin: 8px 0;"><strong>Invoice:</strong> {{ $order->invoice_number }}</p>
+        <p style="font-size: 14px; margin: 8px 0;"><strong>Invoice:</strong> {{ $order->invoice_number }}</p>
 
-            <div style="border-top: 1px dashed #999; border-bottom: 1px dashed #999; padding: 10px 0;">
-                @foreach ($order->orderProducts as $item)
-                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px;">
-                        <div>
-                            {{ $item->product->name }}<br>
-                            <small style="color: #666;">{{ $item->quantity }} x Rp
-                                {{ number_format($item->product->selling_price, 0, ',', '.') }}</small>
-                        </div>
-                        <div style="font-weight: 600;">
-                            Rp {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <div style="margin-top: 12px; font-size: 14px;">
-                <div
-                    style="display: flex; justify-content: space-between; font-weight: 700; border-top: 2px solid #333; padding-top: 8px;">
-                    <span>Total</span>
-                    <span>Rp {{ number_format($total_price, 0, ',', '.') }}</span>
+        <div style="border-top: 1px dashed #999; border-bottom: 1px dashed #999; padding: 10px 0;">
+            @foreach ($order->orderProducts as $item)
+            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px;">
+                <div>
+                    {{ $item->product->name }}<br>
+                    <small style="color: #666;">{{ $item->quantity }} x Rp
+                        {{ number_format($item->product->selling_price, 0, ',', '.') }}</small>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 4px;">
-                    <span>Dibayar</span>
-                    <span>Rp {{ number_format($paid_amount, 0, ',', '.') }}</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 4px;">
-                    <span>Kembalian</span>
-                    <span>Rp {{ number_format($change, 0, ',', '.') }}</span>
+                <div style="font-weight: 600;">
+                    Rp {{ number_format($item->quantity * $item->unit_price, 0, ',', '.') }}
                 </div>
             </div>
+            @endforeach
+        </div>
 
-            <p style="text-align: center; margin-top: 30px; font-weight: 600; font-size: 14px;">Terima kasih atas
-                kunjungan Anda!</p>
+        <div style="margin-top: 12px; font-size: 14px;">
+            <div
+                style="display: flex; justify-content: space-between; font-weight: 700; border-top: 2px solid #333; padding-top: 8px;">
+                <span>Total</span>
+                <span>Rp {{ number_format($total_price, 0, ',', '.') }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                <span>Dibayar</span>
+                <span>Rp {{ number_format($paid_amount, 0, ',', '.') }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                <span>Kembalian</span>
+                <span>Rp {{ number_format($change, 0, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <p style="text-align: center; margin-top: 30px; font-weight: 600; font-size: 14px;">Terima kasih atas
+            kunjungan Anda!</p>
         @endif
     </div>
 
     @push('scripts')
-        <!-- Load html2pdf.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-        <script>
-            function printReceipt() {
-                const element = document.getElementById("printArea");
-                element.style.display = "block"; // tampilkan area sebelum print
+    <!-- Load html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function printReceipt() {
+            const element = document.getElementById("printArea");
+            element.style.display = "block"; // tampilkan area sebelum print
 
-                const opt = {
-                    margin: 0.3,
-                    filename: 'struk-pembayaran.pdf',
-                    image: {
-                        type: 'jpeg',
-                        quality: 0.98
-                    },
-                    html2canvas: {
-                        scale: 2
-                    },
-                    jsPDF: {
-                        unit: 'in',
-                        format: 'A5',
-                        orientation: 'portrait'
-                    }
-                };
+            const opt = {
+                margin: 0.3,
+                filename: 'struk-pembayaran.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 2
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'A5',
+                    orientation: 'portrait'
+                }
+            };
 
-                html2pdf().set(opt).from(element).save().then(() => {
-                    element.style.display = "none"; // sembunyikan kembali setelah print
-                });
-            }
-
-            window.addEventListener('payment-successful', function() {
-                // Tampilkan modal
-                const modal = new bootstrap.Modal(document.getElementById('successModal'));
-                modal.show();
-
-                // Redirect setelah 3 detik
-                setTimeout(function() {
-                    window.location.href = "{{ route('order') }}";
-                }, 3000);
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = "none"; // sembunyikan kembali setelah print
             });
-        </script>
+        }
+
+        window.addEventListener('payment-successful', function() {
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            modal.show();
+
+            // Redirect setelah 3 detik
+            setTimeout(function() {
+                window.location.href = "{{ route('order') }}";
+            }, 3000);
+        });
+    </script>
     @endpush
 
     <style>

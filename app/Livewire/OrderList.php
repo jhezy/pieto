@@ -3,13 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\Closing;
-
 use App\Models\Order;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
-
 
 class OrderList extends Component
 {
@@ -26,23 +21,18 @@ class OrderList extends Component
 
     public function loadTodayData()
     {
-        // Define today's start and end time
         $todayStart = Carbon::today();
         $todayEnd = Carbon::today()->endOfDay();
 
-        // Get all orders for today
         $todayOrders = Order::whereBetween('created_at', [$todayStart, $todayEnd])
             ->with(['orderProducts.product'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Calculate summary data
         $this->todayTransactions = $todayOrders->count();
         $this->todayRevenue = 0;
         $this->todayProfit = 0;
         $this->todaySoldItems = 0;
-
-        // Process orders for detailed transaction list
         $this->transactions = [];
 
         foreach ($todayOrders as $order) {
@@ -63,7 +53,7 @@ class OrderList extends Component
                     'name' => $item->product->name,
                     'quantity' => $item->quantity,
                     'price' => $item->unit_price,
-                    'total' => $sales
+                    'total' => $sales,
                 ];
             }
 
@@ -78,7 +68,7 @@ class OrderList extends Component
                 'revenue' => $orderRevenue,
                 'profit' => ($orderRevenue - $orderCost),
                 'items' => $orderItems,
-                'products' => $productList
+                'products' => $productList,
             ];
         }
     }
@@ -87,19 +77,7 @@ class OrderList extends Component
     {
         return redirect()->route('receipt.print', ['id' => $orderId]);
     }
-    public function print($id)
-    {
-        $transaction = Transaction::with('items.product')->findOrFail($id);
-        return view('receipt', compact('transaction'));
-    }
 
-
-
-    public function showReceipt($invoice)
-    {
-        $transaction = Transaction::with('items.product')->where('invoice', $invoice)->firstOrFail();
-        return view('receipt', compact('transaction'));
-    }
 
 
     public function refresh()

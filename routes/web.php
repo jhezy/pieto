@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReceiptController;
 use App\Livewire\Pos;
 use App\Livewire\ProductList;
 use App\Livewire\ProductCreate;
@@ -24,7 +25,9 @@ Route::middleware(['auth'])->group(function () {
     // Order
     Route::get('/order', OrderList::class)->name('order');
     Route::get('/order/{id}/receipt', [App\Livewire\OrderList::class, 'printReceipt'])->name('order.receipt');
-    Route::get('/receipt/{id}/print', [ReceiptController::class, 'print'])->name('receipt.print');
+    // Route::get('/receipt/{id}', [ReceiptController::class, 'show'])->name('order.receipt');
+    Route::get('/order/{id}/receipt', [ReceiptController::class, 'show'])->name('receipt.print');
+
 
 
 

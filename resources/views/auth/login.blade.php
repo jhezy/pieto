@@ -3,7 +3,8 @@
 @section('content')
 <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f3f4f6;">
     <div style="background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); width: 100%; max-width: 380px; padding: 30px;">
-        <h3 style="text-align: center; margin-bottom: 25px; font-weight: 600;">Masuk</h3>
+        <h2 style="text-align: center; margin-bottom: 25px; font-weight: 600;">KEDAI PIETO</h2>
+        <!-- <h3 style="text-align: center; margin-bottom: 25px; font-weight: 600;">Masuk</h3> -->
 
         @if (session('status'))
         <div style="background: #d1e7dd; color: #0f5132; padding: 10px; border-radius: 6px; margin-bottom: 15px;">
@@ -42,7 +43,7 @@
             <div>
                 <button type="submit"
                     style="width: 100%; background-color: #2563eb; color: white; padding: 10px; border: none; border-radius: 6px; font-weight: 600;">
-                    Login
+                    Masuk
                 </button>
             </div>
 
