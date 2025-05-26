@@ -23,9 +23,9 @@
                                 <i class="bi bi-search me-1"></i> Tampilkan Laporan
                             </button>
                             @if ($isFiltered)
-                            <button wire:click="exportPDF" class="btn btn-outline-dark">
+                            <!-- <button wire:click="exportPDF" class="btn btn-outline-dark">
                                 <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
-                            </button>
+                            </button> -->
                             @endif
                         </div>
                     </div>
@@ -49,8 +49,12 @@
             <div class="col-md-4">
                 <div class="card shadow-sm h-100 bg-white">
                     <div class="card-body text-center">
-                        <h6 class="text-muted mb-2">Total Penjualan</h6>
-                        <h3 class="mb-0">Rp {{ number_format($totalSales, 0, ',', '.') }}</h3>
+                        <h6 class="text-muted mb-2">
+                            <strong>Penjualan</strong>
+                        </h6>
+                        <h1 class="mb-0">
+                            <strong>Rp {{ number_format($totalSales, 0, ',', '.') }}</strong>
+                        </h1>
                         <p class="text-muted mt-2 mb-0">{{ count($orders) }} Transaksi</p>
                     </div>
                 </div>
@@ -213,7 +217,7 @@
     let productPieChart = null;
 
     document.addEventListener('livewire:initialized', () => {
-        @this.on('printReport', () => {
+        this.on('printReport', () => {
             const printContent = document.getElementById('printable-report');
             const printHeaders = document.querySelectorAll('.print-header');
 
@@ -225,8 +229,7 @@
             // Create PDF
             const opt = {
                 margin: 10,
-                filename: 'laporan-penjualan-{{ \Carbon\Carbon::now()->format('
-                dmY ') }}.pdf',
+                filename: 'laporan-penjualan-{{ \Carbon\Carbon::now()->format("dmY") }}.pdf',
                 image: {
                     type: 'jpeg',
                     quality: 0.98
