@@ -1,43 +1,56 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ReceiptController;
 use App\Livewire\Pos;
 use App\Livewire\ProductList;
 use App\Livewire\ProductCreate;
 use App\Livewire\ProductEdit;
 use App\Livewire\OrderList;
-use App\Livewire\RekapTransaksi;
+
+// Redirect default -> cek role/email
+Route::get('/', function () {
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+
+    $user = Auth::user();
+    if ($user->email == 'superadmin@gmail.com') {
+        return redirect()->route('order');
+    } elseif ($user->email == 'kasir@gmail.com') {
+        return redirect()->route('pos');
+    } else {
+        return redirect()->route('order'); // Default redirect jika email tidak terdaftar
+    }
+});
+
+// Redirect setelah login
+Route::get('/home', function () {
+    $user = Auth::user();
+    if ($user->email == 'superadmin@gmail.com') {
+        return redirect()->route('order');
+    } elseif ($user->email == 'kasir@gmail.com') {
+        return redirect()->route('pos');
+    } else {
+        return redirect()->route('order');
+    }
+});
 
 Route::middleware(['auth'])->group(function () {
-    // POS
-    Route::get('/', Pos::class)->name('pos');
-    Route::get('/home', function () {
-        return redirect()->route('pos');
-    });
+    Route::get('/pos', Pos::class)->name('pos');
 
-    // Produk
     Route::get('/product', ProductList::class)->name('product');
     Route::get('/product/create', ProductCreate::class);
     Route::get('/product/edit/{id}', ProductEdit::class)->name('product.edit');
 
-    // Order
     Route::get('/order', OrderList::class)->name('order');
-    Route::get('/order/{id}/receipt', [App\Livewire\OrderList::class, 'printReceipt'])->name('order.receipt');
-    // Route::get('/receipt/{id}', [ReceiptController::class, 'show'])->name('order.receipt');
+
+    // Perbaiki duplikasi route receipt
     Route::get('/order/{id}/receipt', [ReceiptController::class, 'show'])->name('receipt.print');
 
+    Route::get('/rekap', fn() => view('report.rekap'));
 
-
-
-    // Rekap Transaksi
-    Route::get('/rekap', function () {
-        return view('report.rekap');
-    });
-
-
-    // logout
     Route::post('/logout', function () {
         Auth::logout();
         request()->session()->invalidate();
@@ -46,4 +59,5 @@ Route::middleware(['auth'])->group(function () {
     })->name('logout');
 });
 
+// Route auth bawaan Laravel
 Auth::routes();

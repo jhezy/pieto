@@ -23,9 +23,10 @@
                                 <i class="bi bi-search me-1"></i> Tampilkan Laporan
                             </button>
                             @if ($isFiltered)
-                            <!-- <button wire:click="exportPDF" class="btn btn-outline-dark">
+                            <button onclick="generatePDF()" class="btn btn-danger">
                                 <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
-                            </button> -->
+                            </button>
+
                             @endif
                         </div>
                     </div>
@@ -154,7 +155,7 @@
                     <div class="card-header bg-white">
                         <h6 class="card-title mb-0">
                             <i class="bi bi-trophy me-2 text-warning"></i>
-                            Top 5 Produk Terlaris
+                            Rekapitulasi Item
                         </h6>
                     </div>
                     <div class="card-body">
@@ -213,6 +214,39 @@
 
 @push('scripts')
 <script>
+    function generatePDF() {
+        const printContent = document.getElementById('printable-report');
+        const printHeaders = document.querySelectorAll('.print-header');
+
+        // Tampilkan header hanya untuk PDF
+        printHeaders.forEach(header => {
+            header.style.display = 'block';
+        });
+
+        const opt = {
+            margin: 10,
+            filename: 'laporan-penjualan-{{ \Carbon\Carbon::now()->format("dmY") }}.pdf',
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2
+            },
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+
+        html2pdf().set(opt).from(printContent).save().then(() => {
+            // Sembunyikan kembali header setelah export
+            printHeaders.forEach(header => {
+                header.style.display = 'none';
+            });
+        });
+    }
     let salesChart = null;
     let productPieChart = null;
 
@@ -252,140 +286,6 @@
             });
         });
     });
-
-    // function initCharts() {
-    //     const dailySales = @this.dailySales;
-    //     const topProducts = @this.topProducts;
-
-    //     if (!dailySales || Object.keys(dailySales).length === 0) return;
-
-    //     // Sales Chart
-    //     const salesCtx = document.getElementById('salesChart');
-    //     const dates = Object.values(dailySales).map(day => day.date);
-    //     const salesData = Object.values(dailySales).map(day => day.sales);
-    //     const profitData = Object.values(dailySales).map(day => day.profit);
-
-    //     if (salesChart) {
-    //         salesChart.destroy();
-    //     }
-
-    //     salesChart = new Chart(salesCtx, {
-    //         type: 'bar',
-    //         data: {
-    //             labels: dates,
-    //             datasets: [{
-    //                     label: 'Penjualan',
-    //                     data: salesData,
-    //                     backgroundColor: 'rgba(236, 166, 5, 0.7)',
-    //                     borderColor: 'rgb(236, 166, 5)',
-    //                     borderWidth: 1
-    //                 },
-    //                 {
-    //                     label: 'Keuntungan',
-    //                     data: profitData,
-    //                     backgroundColor: 'rgba(40, 167, 69, 0.7)',
-    //                     borderColor: 'rgb(40, 167, 69)',
-    //                     borderWidth: 1,
-    //                     type: 'line'
-    //                 }
-    //             ]
-    //         },
-    //         options: {
-    //             responsive: true,
-    //             maintainAspectRatio: false,
-    //             scales: {
-    //                 y: {
-    //                     beginAtZero: true,
-    //                     ticks: {
-    //                         callback: function(value) {
-    //                             return 'Rp ' + value.toLocaleString('id-ID');
-    //                         }
-    //                     }
-    //                 }
-    //             },
-    //             plugins: {
-    //                 tooltip: {
-    //                     callbacks: {
-    //                         label: function(context) {
-    //                             return context.dataset.label + ': Rp ' + context.raw.toLocaleString(
-    //                             'id-ID');
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     });
-
-    //     // Product Pie Chart
-    //     if (topProducts && topProducts.length > 0) {
-    //         const pieCtx = document.getElementById('productPieChart');
-    //         const productNames = topProducts.map(p => p.product.name);
-    //         const productSales = topProducts.map(p => p.sales);
-
-    //         if (productPieChart) {
-    //             productPieChart.destroy();
-    //         }
-
-    //         productPieChart = new Chart(pieCtx, {
-    //             type: 'doughnut',
-    //             data: {
-    //                 labels: productNames,
-    //                 datasets: [{
-    //                     data: productSales,
-    //                     backgroundColor: [
-    //                         'rgba(236, 166, 5, 0.7)',
-    //                         'rgba(23, 162, 184, 0.7)',
-    //                         'rgba(40, 167, 69, 0.7)',
-    //                         'rgba(220, 53, 69, 0.7)',
-    //                         'rgba(108, 117, 125, 0.7)'
-    //                     ],
-    //                     borderColor: [
-    //                         'rgb(236, 166, 5)',
-    //                         'rgb(23, 162, 184)',
-    //                         'rgb(40, 167, 69)',
-    //                         'rgb(220, 53, 69)',
-    //                         'rgb(108, 117, 125)'
-    //                     ],
-    //                     borderWidth: 1
-    //                 }]
-    //             },
-    //             options: {
-    //                 responsive: true,
-    //                 maintainAspectRatio: false,
-    //                 plugins: {
-    //                     legend: {
-    //                         position: 'bottom',
-    //                         labels: {
-    //                             boxWidth: 12
-    //                         }
-    //                     },
-    //                     tooltip: {
-    //                         callbacks: {
-    //                             label: function(context) {
-    //                                 const value = context.raw;
-    //                                 const total = context.chart.data.datasets[0].data.reduce((a, b) => a +
-    //                                     b, 0);
-    //                                 const percentage = Math.round((value / total) * 100);
-    //                                 return context.label + ': Rp ' + value.toLocaleString('id-ID') + ' (' +
-    //                                     percentage + '%)';
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     }
-    // }
-
-    // document.addEventListener('livewire:initialized', () => {
-    //     @this.on('$refresh', () => {
-    //         setTimeout(() => {
-    //             if (@this.isFiltered) {
-    //                 initCharts();
-    //             }
-    //         }, 100);
-    //     });
-    // });
 </script>
 
 <style>
