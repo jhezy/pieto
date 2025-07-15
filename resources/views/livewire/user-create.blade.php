@@ -19,18 +19,12 @@
                             @enderror
                         </div>
 
+
+
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control" wire:model="email">
                             @error('email')
-                            <div class="alert alert-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Password</label>
-                            <input type="password" class="form-control" wire:model="password">
-                            @error('password')
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
@@ -45,6 +39,16 @@
                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" wire:model="password">
+                            @error('password')
+                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+
 
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">Simpan</button>
